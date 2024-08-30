@@ -2,6 +2,8 @@ from camera import Camera
 import struct
 from math import tan, pi
 from Mathlib import *
+import pygame
+import random
 def char(c):
     #1 byte
     return struct.pack("=c", c.encode("ascii"))
@@ -99,25 +101,36 @@ class RendererRT(object):
         
         self.topEdge = tan(self.fov / 2) * self.nearPlane
         self.rightEdge = self.topEdge * aspectRatio
+    
     def glCastRay(self, orig, direction):
+        
         intersect = False
+        
         for obj in self.scene:
             intersect = obj.ray_intersect(orig, direction)
+            if intersect:
+                break
         return intersect
              
     def glRender(self):
-        for x in range(self.vpX, self.vpX + self.vpWidth):
-            for y in range(self.vpY, self.vpY +self.vpHeight):
-                if 0 <=x<self.width and 0<=y<self.height:
-                    #Coordendas normalizadas van de -1 a 1
-                    pX = ((x+0.5-self.vpX) / self.vpWidth) *2 -1
-                    pY = ((y+0.5-self.vpY) / self.vpHeight) *2 -1
-                    pX *= self.rightEdge
-                    pY *= self.topEdge
-                    
-                    orig = self.camera.translate
-                    dir = [pX, pY,  -self.nearPlane]
-                    dir = normalize_vector(dir)
-                    
-                    if self.glCastRay(self.camera.translate, dir):
-                        self.glPoint(x,y)
+        indeces = [(i, j) for i in range(self.vpWidth) for j in range(self.vpHeight)]
+        random.shuffle(indeces)
+        for i, j in indeces:
+            x = i+ self.vpX
+            y = j+ self.vpY
+            if 0 <=x<self.width and 0<=y<self.height:
+                #Coordendas normalizadas van de -1 a 1
+                pX = ((x+0.5-self.vpX) / self.vpWidth) *2 -1
+                pY = ((y+0.5-self.vpY) / self.vpHeight) *2 -1
+                
+                pX *= self.rightEdge
+                pY *= self.topEdge
+                
+                orig = self.camera.translate
+                                    
+                dir = [pX, pY,  -self.nearPlane]
+                dir = normalize_vector(dir)
+                
+                if self.glCastRay(self.camera.translate, dir):
+                    self.glPoint(x,y)
+                    pygame.display.flip()
