@@ -29,6 +29,7 @@ class RendererRT(object):
         self.glClear()
         
         self.scene = []
+        self.lights = []
         
         
         
@@ -104,14 +105,19 @@ class RendererRT(object):
     
     def glCastRay(self, orig, direction):
         
-        intersect = False
+        depth = float('inf')
+        intercept = None 
+        hit = None
         
         for obj in self.scene:
-            intersect = obj.ray_intersect(orig, direction)
-            if intersect:
-                break
-        return intersect
-             
+            intercept = obj.ray_intersect(orig,direction)
+            if intercept != None:
+                if intercept.distance < depth:
+                    hit = intercept
+                    depth = intercept.distance
+                    
+        return hit
+    
     def glRender(self):
         indeces = [(i, j) for i in range(self.vpWidth) for j in range(self.vpHeight)]
         random.shuffle(indeces)
@@ -131,6 +137,10 @@ class RendererRT(object):
                 dir = [pX, pY,  -self.nearPlane]
                 dir = normalize_vector(dir)
                 
-                if self.glCastRay(self.camera.translate, dir):
-                    self.glPoint(x,y)
+                intercept = self.glCastRay(self.camera.translate, dir)
+                
+                #INCOMPLETOOO
+                if intercept != None:
+                    color = intercept.obj.material.GetSurfaceColor(intercept, self)
+                    self.glPoint(x, y,  color)
                     pygame.display.flip()
