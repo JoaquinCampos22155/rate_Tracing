@@ -32,8 +32,6 @@ class RendererRT(object):
         self.lights = []
         
         
-        
-        
     def glColor(self, r, g, b):
         r = min(1, max(0, r))
         g = min(1, max(0, g))
@@ -103,18 +101,19 @@ class RendererRT(object):
         self.topEdge = tan(self.fov / 2) * self.nearPlane
         self.rightEdge = self.topEdge * aspectRatio
     
-    def glCastRay(self, orig, direction):
+    def glCastRay(self, orig, direction, sceneObj = None):
         
         depth = float('inf')
         intercept = None 
         hit = None
         
         for obj in self.scene:
-            intercept = obj.ray_intersect(orig,direction)
-            if intercept != None:
-                if intercept.distance < depth:
-                    hit = intercept
-                    depth = intercept.distance
+            if obj != sceneObj:
+                intercept = obj.ray_intersect(orig,direction)
+                if intercept != None:
+                    if intercept.distance < depth:
+                        hit = intercept
+                        depth = intercept.distance
                     
         return hit
     

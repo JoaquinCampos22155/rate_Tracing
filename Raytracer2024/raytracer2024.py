@@ -15,16 +15,18 @@ clock = pygame.time.Clock()
 
 rt = RendererRT(screen)
 
-brick = Material(diffuse = [1,0,0] )
-grass = Material(diffuse = [0.1,1,0.1] )
-water = Material(diffuse = [0,0,1] )
+brick = Material(diffuse = [1,0,0] , spec = 16 , Ks = 0.05 )
+grass = Material(diffuse = [0.1,1,0.1], spec = 32 , Ks = 0.1)
+water = Material(diffuse = [0,0,1], spec = 128,  Ks = 0.4)
 
-rt.lights.append(DirectionalLight(direction=[-1,-1,-1]))
-#rt.lights.append( AmbientLight(intensity=))
+rt.lights.append(DirectionalLight(direction=[-1,-1,-1], intensity = 0.8,color = [0,0,1]))
+#rt.lights.append(DirectionalLight(direction=[-1,-0.5,-1]), intensity = 0.6, color = [0,0,1])
+
+rt.lights.append( AmbientLight(intensity= 0.1))
 
 rt.scene.append(Sphere([0, 0, -5], 1, brick))
 rt.scene.append(Sphere([0.8, 1, -5], 0.8, grass))
-rt.scene.append(Sphere([-0.8, 1, -5], 0.8, water))
+
 
 
 rt.glRender()

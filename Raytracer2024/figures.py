@@ -1,4 +1,3 @@
-import numpy as np
 from Mathlib import *
 from intercept import *
 class Shape(object):
@@ -19,9 +18,9 @@ class Sphere(Shape):
         
     def ray_intersect(self, orig, dir):
         #NUMPY
-        L = np.subtract(self.position, orig)
+        L = subtract_fully(self.position, orig)
         tca = dotProd(L, dir)
-        d = (((np.linalg.norm(L))**2 - (tca**2))**0.5)
+        d = (((normalize_vector(L))**2 - (tca**2))**0.5)
         
         if d > self.radius:
             return None
@@ -34,8 +33,8 @@ class Sphere(Shape):
         if t0 <0:
             return None
         
-        P = np.add(orig, np.multiply(dir,t0))
-        normal = np.subtract(P, self.position)
+        P = add_vectors(orig, mult_scalar_vect(dir,t0))
+        normal = subtract_fully(P, self.position)
         normal = normalize_vector(normal)
         return Intercept(point = P,
                          normal= normal,

@@ -4,15 +4,54 @@ import math
 def normalize_vector(v):
     magnitude = math.sqrt(sum(x**2 for x in v))
     return [x / magnitude for x in v]
+def add_vectors(v1, v2):
+    #suma de vecotres
+    max_len = max(len(v1), len(v2))
+    
+    # Extender los vectores para que tengan la misma longitud usando 0 como relleno
+    v1_extended = v1 + [0] * (max_len - len(v1))
+    v2_extended = v2 + [0] * (max_len - len(v2))
+    
+    # Sumar elemento a elemento
+    return [x + y for x, y in zip(v1_extended, v2_extended)]
+
+def add_scalar_to_vector(scalar, vector):
+    #suma escalar por vector
+    return [x + scalar for x in vector]
     
 def normalize(vector):
     return [vector[0] / vector[3], vector[1] / vector[3], vector[2] / vector[3]]
+#multiplicacion escalar por vector.
+def mult_scalar_vect(vector, scalar):
+    return[x * scalar for x in vector]
+
+def subtract_vectors(v1, v2):
+    # Resta de vectores
+    return [x - y for x, y in zip(v1, v2)]
+def subtract_fully(a, b):
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+        return a - b
+    
+    if isinstance(a, (list, tuple)) and isinstance(b, (list, tuple)):
+        if len(a) != len(b):
+            raise ValueError("Las dimensiones no coinciden.")
+        return [subtract_fully(x, y) for x, y in zip(a, b)]
+    
+    if isinstance(a, (int, float)) and isinstance(b, (list, tuple)):
+        return [subtract_fully(a, x) for x in b]
+    
+    if isinstance(b, (int, float)) and isinstance(a, (list, tuple)):
+        return [subtract_fully(x, b) for x in a]
+    
+    
+    raise TypeError("Los tipos de datos no son compatibles para la resta.")
+
 def dotProd(vec1, vec2):
     # Asegúrate de que ambas listas tengan al menos 3 elementos
     if len(vec1) < 3:
-        vec1 = vec1 + [0] * (3 - len(vec1))  # Rellena con ceros si es necesario
+        vec1 = vec1 + [0] * (3 - len(vec1))  
     if len(vec2) < 3:
-        vec2 = vec2 + [0] * (3 - len(vec2))  # Rellena con ceros si es necesario
+        vec2 = vec2 + [0] * (3 - len(vec2))  
     
     # Calcula el producto punto
     x = vec1[0] * vec2[0]
@@ -23,9 +62,9 @@ def dotProd(vec1, vec2):
     return res
 def crossProd(mat1, mat2):
     return [
-        mat1[1] * mat2[2] - mat1[2] * mat2[1],  # Componente i (positivo)
-        -(mat1[0] * mat2[2] - mat1[2] * mat2[0]),  # Componente j (negativo)
-        mat1[0] * mat2[1] - mat1[1] * mat2[0]   # Componente k (positivo)
+        mat1[1] * mat2[2] - mat1[2] * mat2[1],  
+        -(mat1[0] * mat2[2] - mat1[2] * mat2[0]), 
+        mat1[0] * mat2[1] - mat1[1] * mat2[0]  
     ]
 
 #mult elemento por elemento
@@ -90,10 +129,6 @@ def inverseMatrix(matrix):
 #coordenadas baricentricas
 def barycentricCoords(A, B, C, P):
 	
-	# Se saca el �rea de los subtri�ngulos y del tri�ngulo
-	# mayor usando el Shoelace Theorem, una f�rmula que permite
-	# sacar el �rea de un pol�gono de cualquier cantidad de v�rtices.
-
 	areaPCB = abs((P[0]*C[1] + C[0]*B[1] + B[0]*P[1]) - 
 				  (P[1]*C[0] + C[1]*B[0] + B[1]*P[0]))
 
@@ -106,19 +141,15 @@ def barycentricCoords(A, B, C, P):
 	areaABC = abs((A[0]*B[1] + B[0]*C[1] + C[0]*A[1]) - 
 				  (A[1]*B[0] + B[1]*C[0] + C[1]*A[0]))
 
-	# Si el �rea del tri�ngulo es 0, retornar nada para
-	# prevenir divisi�n por 0.
 	if areaABC == 0:
 		return None
 
-	# Determinar las coordenadas baric�ntricas dividiendo el 
-	# �rea de cada subtri�ngulo por el �rea del tri�ngulo mayor.
+	
 	u = areaPCB / areaABC
 	v = areaACP / areaABC
 	w = areaABP / areaABC
 
-	# Si cada coordenada est� entre 0 a 1 y la suma de las tres
-	# es igual a 1, entonces son v�lidas.
+
 	if 0<=u<=1 and 0<=v<=1 and 0<=w<=1:
 		return (u, v, w)
 	else:
@@ -192,3 +223,14 @@ def RotationMatrix(pitch, yaw, roll):
     
     return resultM
 
+def reflectVector(normal, direction):
+    #R = 2*(N .L) *N - L
+    normal_vector = normalize_vector(normal)
+    normal_dir = normalize_vector(direction)
+    
+    reflect = dotProd(normal_vector, normal_dir)
+    reflect = reflect * 2
+    reflect = mult_scalar_vect(reflect,normal)
+    reflect = subtract_vectors(reflect, direction)
+    reflect = normalize_vector(reflect)
+    return reflect
