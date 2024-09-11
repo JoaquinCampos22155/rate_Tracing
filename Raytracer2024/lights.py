@@ -26,7 +26,7 @@ class DirectionalLight(Light):
         
         if intercept:
             dir = [(i * -1) for i in self.direction]
-            intensity = dotProd(normalize_vector(intercept), dir)
+            intensity = dotProd(intercept.normal, dir)
             intensity = max(0, min(1, intensity))
             intensity *= (1 - intercept.obj.material.Ks)
             lightColor = [(i * intensity) for i in lightColor]

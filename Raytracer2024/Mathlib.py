@@ -1,9 +1,17 @@
-from math import cos, sin, pi, isclose
+from math import cos, sin, pi
 import math
 #operaciones de matrices
 def normalize_vector(v):
-    magnitude = math.sqrt(sum(x**2 for x in v))
-    return [x / magnitude for x in v]
+    magnitude = math.sqrt(sum(vi**2 for vi in v))
+    if magnitude == 0:
+        return [0] * len(v)
+    return [vi / magnitude for vi in v]
+def producto_punto_con_su_mismo(vector):
+    return sum(x * x for x in vector)
+def elevar_componentes_al_cuadrado(vector):
+    return [x**2 for x in vector]
+def magnitude_vect(v):
+    return math.sqrt(sum([x**2 for x in v]))
 def add_vectors(v1, v2):
     #suma de vecotres
     max_len = max(len(v1), len(v2))
@@ -19,8 +27,6 @@ def add_scalar_to_vector(scalar, vector):
     #suma escalar por vector
     return [x + scalar for x in vector]
     
-def normalize(vector):
-    return [vector[0] / vector[3], vector[1] / vector[3], vector[2] / vector[3]]
 #multiplicacion escalar por vector.
 def mult_scalar_vect(vector, scalar):
     return[x * scalar for x in vector]
@@ -47,19 +53,7 @@ def subtract_fully(a, b):
     raise TypeError("Los tipos de datos no son compatibles para la resta.")
 
 def dotProd(vec1, vec2):
-    # Asegúrate de que ambas listas tengan al menos 3 elementos
-    if len(vec1) < 3:
-        vec1 = vec1 + [0] * (3 - len(vec1))  
-    if len(vec2) < 3:
-        vec2 = vec2 + [0] * (3 - len(vec2))  
-    
-    # Calcula el producto punto
-    x = vec1[0] * vec2[0]
-    y = vec1[1] * vec2[1]
-    z = vec1[2] * vec2[2]
-    
-    res = x + y + z
-    return res
+    return sum(vi * vj for vi, vj in zip(vec1, vec2))
 def crossProd(mat1, mat2):
     return [
         mat1[1] * mat2[2] - mat1[2] * mat2[1],  
@@ -230,7 +224,7 @@ def reflectVector(normal, direction):
     
     reflect = dotProd(normal_vector, normal_dir)
     reflect = reflect * 2
-    reflect = mult_scalar_vect(reflect,normal)
+    reflect = mult_scalar_vect(normal,reflect)
     reflect = subtract_vectors(reflect, direction)
     reflect = normalize_vector(reflect)
     return reflect

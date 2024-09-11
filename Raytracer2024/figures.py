@@ -20,7 +20,8 @@ class Sphere(Shape):
         #NUMPY
         L = subtract_fully(self.position, orig)
         tca = dotProd(L, dir)
-        d = (((normalize_vector(L))**2 - (tca**2))**0.5)
+        L = magnitude_vect(L) 
+        d = ((L)**2 - (tca**2))**0.5
         
         if d > self.radius:
             return None
