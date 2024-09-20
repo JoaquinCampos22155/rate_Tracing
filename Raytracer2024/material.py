@@ -20,7 +20,7 @@ class Material(object):
         finalColor = self.diffuse
         
         if self.texture and intercept.texCoords:
-            textureColor = self.texture.getColor(intercept.textCoords[0],intercept.textCoords[1])
+            textureColor = self.texture.getColor(intercept.texCoords[0],intercept.texCoords[1])
             finalColor = [finalColor[i] * textureColor[i] for i in range(3)]
         for light in renderer.lights:
             shadowIntercept = None
