@@ -4,9 +4,10 @@ from gl import *
 from figures import *
 from material import *
 from lights import *
+from texture import Texture
 
-width =  128*2*2
-height = 128*2*2
+width =  128
+height = 128
 background_color = (0, 0, 0)  
 
 
@@ -14,48 +15,32 @@ screen = pygame.display.set_mode((width,height), pygame.SCALED)
 clock = pygame.time.Clock()
  
 rt = RendererRT(screen)
+rt.envMap = Texture("Raytracer2024/textures/parkingLot.bmp")
 
+
+#MATERIALS--------------------------------
 brick = Material(diffuse = [1,0,0] , spec = 16 , Ks = 0.5)
 grass = Material(diffuse = [0.1,1,0.1], spec = 32 , Ks = 0.5)
 water = Material(diffuse = [0,0,1], spec = 128,  Ks = 0.2)
-#materiales lab 1
 snow = Material(diffuse = [0.6,0.6,0.6], spec = 63,  Ks = 0.1)
 eyewhite = Material(diffuse = [1,1,1], spec = 128,  Ks = 1)
 eyes = Material(diffuse = [0,0,0], spec = 256,  Ks = 0.9)
 nose = Material(diffuse = [1,0.4,0], spec = 128,  Ks = 0.9)
 mouth = Material(diffuse = [0,0,0], spec = 128,  Ks = 0.9)
 buttons = Material(diffuse = [0,0,0], spec = 256,  Ks = 0.1)
+#reflective
+mirror = Material(diffuse= [0.9,0.9,0.9], spec = 128, Ks = 0.2, matType = REFLECTIVE)
+blueMirror = Material(diffuse= [0.5,0.5,1.0], spec = 128, Ks = 0.2, matType = REFLECTIVE)
+#earth = Material(texture = Texture("textures/earthDay.bmp"))
+#marble = Material(texture = Texture("textures/whiteMarble.bmp"), spec = 128, Ks = 0.2, matType = REFLECTIVE)
+#LIGHTS--------------------------------
+rt.lights.append(DirectionalLight(direction=[-1,-1,-1], intensity=0.8))
+rt.lights.append(DirectionalLight(direction=[0.5,-0.5,-1], intensity=0.8, color=[1,1,1]))
+rt.lights.append(AmbientLight(intensity= 0.1))
 
-
-
-
-rt.lights.append(DirectionalLight(direction=[-1,-1,-1], intensity=0.8, color=[1,1,1]))
-
-rt.lights.append(AmbientLight(intensity= 1))
-
-#cuerpo
-rt.scene.append(Sphere([0, -0.5, -4], radius= 0.7, material=snow))
-rt.scene.append(Sphere([0, 0.4, -3.9], radius=0.45, material=snow))
-rt.scene.append(Sphere([0, 1, -3.89], radius= 0.32, material=snow))
-#ojos
-rt.scene.append(Sphere([0.095, 0.82, -2.81], radius= 0.045, material=eyewhite))
-rt.scene.append(Sphere([-0.095, 0.82, -2.81], radius= 0.045, material=eyewhite))
-rt.scene.append(Sphere([-0.09, 0.80, -2.7], radius= 0.03, material=eyes))
-rt.scene.append(Sphere([0.09, 0.80, -2.7], radius= 0.03, material=eyes))
-#nariz
-rt.scene.append(Sphere([0, 0.73, -2.7], radius= 0.050, material=nose))
-#boca
-rt.scene.append(Sphere([-0.09, 0.57, -2.3], radius= 0.01, material=mouth))
-rt.scene.append(Sphere([0.09, 0.57, -2.3], radius= 0.01, material=mouth))
-rt.scene.append(Sphere([-0.05, 0.55, -2.3], radius= 0.01, material=mouth))
-rt.scene.append(Sphere([0.05, 0.55, -2.3], radius= 0.01, material=mouth))
-rt.scene.append(Sphere([0, 0.54, -2.3], radius= 0.01, material=mouth))
-#botones
-rt.scene.append(Sphere([0, 0.3, -2.5], radius= 0.05, material=buttons))
-rt.scene.append(Sphere([0, 0.05, -2.5], radius= 0.06, material=buttons))
-rt.scene.append(Sphere([0, -0.3, -2.5], radius= 0.07, material=buttons))
-
-
+#SPHERES--------------------------------
+rt.scene.append(Sphere([0, 0, -5], radius=1.5, material=mirror))
+rt.scene.append(Sphere([1, 1, -3], radius=0.5, material=grass))
 
 
 

@@ -1,6 +1,6 @@
 from camera import Camera
 import struct
-from math import tan, pi
+from math import tan, pi, atan2, acos
 from Mathlib import *
 import pygame
 import random
@@ -15,6 +15,9 @@ def word(w):
 def dword(d):
     #4 bytes
     return struct.pack("=l", d)
+
+MAX_RECURSIONT_DEPTH = 3
+
 class RendererRT(object):
     def __init__(self, screen):
         self.screen = screen
@@ -31,6 +34,7 @@ class RendererRT(object):
         self.scene = []
         self.lights = []
         
+        self.envMap = None
         
     def glColor(self, r, g, b):
         r = min(1, max(0, r))
@@ -50,6 +54,13 @@ class RendererRT(object):
         
         self.frameBuffer = [[self.clearColor for y in range(self.height)]
                             for x in range(self.width)]
+        
+    def glEnvMapColor(self, orig, dir):
+        if self.envMap:
+            x = (atan2(dir[2], dir[0])/(2*pi) + 0.5)
+            y = (acos(-dir[1])/pi)
+            return self.envMap.getColor(x, y)
+        return self.clearColor
         
     def glPoint(self, x, y, color=None):
         
@@ -101,7 +112,9 @@ class RendererRT(object):
         self.topEdge = tan(self.fov / 2) * self.nearPlane
         self.rightEdge = self.topEdge * aspectRatio
     
-    def glCastRay(self, orig, direction, sceneObj = None):
+    def glCastRay(self, orig, direction, sceneObj = None, recursion = 0):
+        if recursion >= MAX_RECURSIONT_DEPTH:
+            return None
         
         depth = float('inf')
         intercept = None 
@@ -138,8 +151,12 @@ class RendererRT(object):
                 
                 intercept = self.glCastRay(self.camera.translate, dir)
                 
-                #INCOMPLETOOO
+                color = [0,0,0]
                 if intercept != None:
                     color = intercept.obj.material.GetSurfaceColor(intercept, self)
-                    self.glPoint(x, y,  color)
-                    pygame.display.flip()
+                else:
+                    color = self.glEnvMapColor(self.camera.translate,dir)
+                    
+                self.glPoint(x, y,  color)
+                pygame.display.flip()
+                                    
