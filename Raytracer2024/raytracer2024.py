@@ -6,8 +6,8 @@ from material import *
 from lights import *
 from texture import Texture
 
-width =  128
-height = 128
+width =  128/2/2
+height = 128/2/2
 background_color = (0, 0, 0)  
 
 
@@ -19,6 +19,7 @@ rt.envMap = Texture("Raytracer2024/textures/parkingLot.bmp")
 
 
 #MATERIALS--------------------------------
+#OPAQUE
 brick = Material(diffuse = [1,0,0] , spec = 16 , Ks = 0.5)
 grass = Material(diffuse = [0.1,1,0.1], spec = 32 , Ks = 0.5)
 water = Material(diffuse = [0,0,1], spec = 128,  Ks = 0.2)
@@ -28,22 +29,20 @@ eyes = Material(diffuse = [0,0,0], spec = 256,  Ks = 0.9)
 nose = Material(diffuse = [1,0.4,0], spec = 128,  Ks = 0.9)
 mouth = Material(diffuse = [0,0,0], spec = 128,  Ks = 0.9)
 buttons = Material(diffuse = [0,0,0], spec = 256,  Ks = 0.1)
-#reflective
+#REFLECTIVE
 mirror = Material(diffuse= [0.9,0.9,0.9], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 blueMirror = Material(diffuse= [0.5,0.5,1.0], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 bkground = Material(texture = Texture("Raytracer2024/textures/parkingLot.bmp"))
 #marble = Material(texture = Texture("Raytracer2024/textures/whiteMarble.bmp"), spec = 128, Ks = 0.2, matType = REFLECTIVE)
+#TRANSPARENT
+glass = Material(spec = 123, Ks = 0.2, ior = 1.5, matType= TRANSPARENT)
+
 #LIGHTS--------------------------------
 rt.lights.append(DirectionalLight(direction=[-1,-1,-1], intensity=0.8))
-rt.lights.append(DirectionalLight(direction=[0.5,-0.5,-1], intensity=0.8, color=[1,1,1]))
 rt.lights.append(AmbientLight(intensity= 0.1))
 
 #SPHERES--------------------------------
-rt.scene.append(Sphere([0, 0, -5], radius=1.5, material=mirror))
-rt.scene.append(Sphere([1, 1, -3], radius=0.5, material=bkground))
-
-
-
+rt.scene.append(Sphere([0, 0, -5], radius=1.5, material=glass))
 
 
 rt.glRender()

@@ -1,6 +1,7 @@
 from Mathlib import *
 from math import atan2, acos, pi
 from intercept import *
+import numpy as np
 class Shape(object):
     def __init__(self, position, material):
         self.position = position
@@ -19,7 +20,7 @@ class Sphere(Shape):
         
     def ray_intersect(self, orig, dir):
         #NUMPY
-        L = subtract_fully(self.position, orig)
+        L = subtract_vectors(self.position, orig)
         tca = dotProd(L, dir)
         L = magnitude_vect(L) 
         d = ((L)**2 - (tca**2))**0.5
