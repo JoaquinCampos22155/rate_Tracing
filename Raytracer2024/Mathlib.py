@@ -12,8 +12,51 @@ def elevar_componentes_al_cuadrado(vector):
     return [x**2 for x in vector]
 def magnitude_vect(v):
     return math.sqrt(sum([x**2 for x in v]))
+def adjust_color(color, proportion):
+
+    # Aseguramos que la proporción esté en el rango [0, 1]
+    proportion = min(max(proportion, 0), 1)
+
+    # Normalizamos y ajustamos el color
+    adjusted_color = [min(max(int(c * proportion), 0), 255) for c in color]
+
+    return adjusted_color
+
+def add_fully(v1, v2):
+    # Convertir los vectores a listas si no lo son
+    v1 = list(v1) if not isinstance(v1, list) else v1
+    v2 = list(v2) if not isinstance(v2, list) else v2
+    
+    # Verificar que los elementos dentro de los vectores sean numéricos
+    if not all(isinstance(x, (int, float)) for x in v1):
+        raise ValueError(f"Error: v1 contiene elementos no numéricos. v1: {v1}")
+    
+    if not all(isinstance(x, (int, float)) for x in v2):
+        raise ValueError(f"Error: v2 contiene elementos no numéricos. v2: {v2}")
+    
+    # Si alguno de los vectores es vacío, retornar el otro
+    if len(v1) == 0:
+        return v2
+    if len(v2) == 0:
+        return v1
+    
+    # Extender el tamaño de los vectores para que tengan la misma longitud
+    max_len = max(len(v1), len(v2))
+    v1_extended = v1 + [0] * (max_len - len(v1))
+    v2_extended = v2 + [0] * (max_len - len(v2))
+    
+    # Sumar elemento a elemento
+    return [x + y for x, y in zip(v1_extended, v2_extended)]
 def add_vectors(v1, v2):
-    #suma de vecotres
+    # Asegurarse de que v1 y v2 sean listas
+    if not isinstance(v1, list) or not isinstance(v2, list):
+        raise ValueError(f"Error: Ambos vectores deben ser listas. v1: {v1}, v2: {v2}")
+    
+    # Verificar si uno de los vectores es vacío
+    if len(v1) == 0 or len(v2) == 0:
+        raise ValueError(f"Error: uno de los vectores está vacío. v1: {v1}, v2: {v2}")
+    
+    # Suma de vectores
     max_len = max(len(v1), len(v2))
     
     # Extender los vectores para que tengan la misma longitud usando 0 como relleno
@@ -22,6 +65,8 @@ def add_vectors(v1, v2):
     
     # Sumar elemento a elemento
     return [x + y for x, y in zip(v1_extended, v2_extended)]
+def invert_vector(vector):
+    return [x * -1 for x in vector]
 
 def add_scalar_to_vector(scalar, vector):
     #suma escalar por vector
@@ -30,6 +75,8 @@ def add_scalar_to_vector(scalar, vector):
 #multiplicacion escalar por vector.
 def mult_scalar_vect(vector, scalar):
     return[x * scalar for x in vector]
+def divide_vectors(v1, v2):
+    return [x / y for x, y in zip(v1, v2)]
 
 def subtract_vectors(v1, v2):
     # Resta de vectores
@@ -216,6 +263,11 @@ def RotationMatrix(pitch, yaw, roll):
                 resultM[i][j] += intermediateM[i][k] * rollMat[k][j]
     
     return resultM
+def vector_add(v1, v2):
+    return [v1[i] + v2[i] for i in range(len(v1))]
+
+def vector_subtract(v1, v2):
+    return [v1[i] - v2[i] for i in range(len(v1))]
 
 def reflectVector(normal, direction):
     #R = 2*(N .L) *N - L
@@ -228,3 +280,40 @@ def reflectVector(normal, direction):
     reflect = subtract_vectors(reflect, direction)
     reflect = normalize_vector(reflect)
     return reflect
+
+def cofactor(matriz, row, col):
+    submatriz = [[matriz[i][j] for j in range(len(matriz)) if j != col] for i in range(len(matriz)) if i != row]
+    return ((-1) ** (row + col)) * determinante(submatriz)
+
+def determinante(matriz):
+    if len(matriz) == 2:
+        return matriz[0][0] * matriz[1][1] - matriz[0][1] * matriz[1][0]
+    
+    det = 0
+    for col in range(len(matriz)):
+        det += matriz[0][col] * cofactor(matriz, 0, col)
+    return det
+
+def magnitudVector(v):
+    return math.sqrt(sum(vi**2 for vi in v))
+
+def normalizarVector(v):
+    mag = magnitudVector(v)
+    if mag == 0:
+        return [0] * len(v)
+    return [vi / mag for vi in v]
+
+def productoPunto(v1, v2):
+    return sum(vi * vj for vi, vj in zip(v1, v2))
+
+def productoCruz(v1, v2):
+    if len(v1) == 3 and len(v2) == 3:
+        return [v1[1] * v2[2] - v1[2] * v2[1],
+                v1[2] * v2[0] - v1[0] * v2[2],
+                v1[0] * v2[1] - v1[1] * v2[0]]
+    else:
+        raise ValueError("El producto cruz solo está definido para vectores de 3 dimensiones")
+    
+def multiplicarPorEscalar(escalar, vector):
+    return [escalar * componente for componente in vector]
+
