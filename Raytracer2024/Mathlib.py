@@ -6,6 +6,21 @@ def normalize_vector(v):
     if magnitude == 0:
         return [0] * len(v)
     return [vi / magnitude for vi in v]
+def custom_subtract(a, b):
+    # Verificar si ambas listas tienen el mismo tamaño
+    if len(a) != len(b):
+        raise ValueError("Los arrays deben tener el mismo tamaño.")
+    
+    # Restar cada elemento correspondiente
+    return [a[i] - b[i] for i in range(len(a))]
+def custom_add(a, b):
+    # Verificar si ambas listas tienen el mismo tamaño
+    if len(a) != len(b):
+        raise ValueError("Los arrays deben tener el mismo tamaño.")
+    
+    # Sumar cada elemento correspondiente
+    return [a[i] + b[i] for i in range(len(a))]
+
 def producto_punto_con_su_mismo(vector):
     return sum(x * x for x in vector)
 def elevar_componentes_al_cuadrado(vector):
@@ -293,6 +308,11 @@ def determinante(matriz):
     for col in range(len(matriz)):
         det += matriz[0][col] * cofactor(matriz, 0, col)
     return det
+def linnorm(vector):
+    # Calcula la suma de los cuadrados de los elementos
+    suma_cuadrados = sum([x**2 for x in vector])
+    # Devuelve la raíz cuadrada de la suma de los cuadrados
+    return math.sqrt(suma_cuadrados)
 
 def magnitudVector(v):
     return math.sqrt(sum(vi**2 for vi in v))

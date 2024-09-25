@@ -6,8 +6,8 @@ from material import *
 from lights import *
 from texture import Texture
 
-width =  128*2
-height = 128*2
+width =  64*2*2*2
+height = 64*2*2*2
 background_color = (0, 0, 0)  
 
  
@@ -45,8 +45,8 @@ rt.lights.append(AmbientLight(intensity= 0.1))
 #SPHERES--------------------------------
 rt.scene.append(Sphere([-1.5, 1, -5], radius=0.5, material=brick))
 rt.scene.append(Sphere([-1.5, -1, -5], radius=0.5, material=rocks))
-rt.scene.append(Sphere([0, 1, -5], radius=0.5, material=mirror))
-rt.scene.append(Sphere([0, -1, -5], radius=0.5, material=blueMirror))
+rt.scene.append(Sphere([0, 1, -7], radius=0.5, material=mirror))
+rt.scene.append(Sphere([0, -1, -7], radius=0.5, material=blueMirror))
 rt.scene.append(Sphere([1.5, 1, -5], radius=0.5, material=glass))
 rt.scene.append(Sphere([1.5, -1, -5], radius=0.5, material=glass))
 
@@ -69,6 +69,6 @@ while isRunning:
     pygame.display.flip()	  
     clock.tick(60)
     
-rt.glGFB("HIGHR.bmp")
+rt.glGenerateFrameBuffer("HIGHR.bmp")
 pygame.quit()  
   
