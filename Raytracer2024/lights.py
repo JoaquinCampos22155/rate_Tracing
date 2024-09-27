@@ -39,7 +39,7 @@ class DirectionalLight(Light):
             dir = [(i*-1) for i in self.direction]
             reflect = reflectVector(intercept.normal, dir)
             
-            viewDir = subtract_fully(viewPos, intercept.point)
+            viewDir = [viewPos[i] - intercept.point[i] for i in range(3)]
             viewDir = normalize_vector(viewDir)
 
             #specular = ((V . R) ^ n) * Ks
