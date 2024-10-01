@@ -40,4 +40,4 @@ class Obj(object):
 				for vert in verts:
 					vert = list(map(int, vert.split("/")))
 					face.append(vert)
-				self.faces.append(face)
+				self.faces.append(face) 

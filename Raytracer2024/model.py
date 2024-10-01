@@ -5,7 +5,7 @@ from texture import Texture
 class Model(object):
     def __init__ (self, filename):
         objFile = Obj(filename)
-        
+         
         self.vertices = objFile.vertices
         self.texCoords = objFile.texcoords
         self.faces = objFile.faces

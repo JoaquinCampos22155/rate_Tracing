@@ -64,12 +64,12 @@ class PointLight(Light):
         lightColor =  super().GetLightColor(intercept)
         
         if intercept:
-            dir = np.subtract(self.position, intercept.point)
+            dir = subtract_vectors(self.position, intercept.point)
             #np.linalg.norm() magnitud de vector
             R = np.linalg.norm(dir)
             dir /= R
             
-            intensity = np.dot(intercept.normal, dir)
+            intensity = dotProd(intercept.normal, dir)
             intensity = max(0, min(1, intensity))
             intensity *= (1- intercept.obj.material.Ks)
             
@@ -86,7 +86,7 @@ class PointLight(Light):
     def GetSpecularColor(self, intercept, viewPos):
         specColor = self.color 
         if intercept:
-            dir = np.subtract(self.position, intercept.point)
+            dir = subtract_vectors(self.position, intercept.point)
             #np.linalg.norm() magnitud de vector
             R = np.linalg.norm(dir)
             dir /= R
@@ -129,13 +129,13 @@ class SpotLight(PointLight):
     def SpotLightAttenuation(self, intercept = None):
         if intercept == None:
             return 0
-        wi = np.subtract(self.position, intercept.point)
+        wi = subtract_vectors(self.position, intercept.point)
         wi /= np.linalg.norm(wi)
         
         innerAngleRads = self.innerAngle *pi /180
         outerAngleRads = self.outerAngle *pi /180
         
-        attenuation = (-np.dot(self.direction, wi) - cos(outerAngleRads) ) /(cos(innerAngleRads) - cos(outerAngleRads))
+        attenuation = (-(dotProd(self.direction, wi)) - cos(outerAngleRads) ) /(cos(innerAngleRads) - cos(outerAngleRads))
         
         attenuation = min(1, max(0, attenuation))
         

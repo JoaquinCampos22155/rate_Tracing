@@ -31,12 +31,10 @@ class Sphere(Shape):
         # Evitar raíces de números negativos
         L2_minus_tca2 = L_magnitude**2 - tca**2
         if L2_minus_tca2 < 0:
-            return None  # Si es negativo, no hay intersección
+            return None  
         
-        # Calcular d
         d = (L2_minus_tca2) ** 0.5
         
-        # Comprobar si el rayo está fuera del radio de la esfera
         if d > self.radius:
             return None
         
@@ -55,12 +53,9 @@ class Sphere(Shape):
         if t0 < 0:
             return None
         
-        # Calcular el punto de intersección
-        x = mult_scalar_vect(dir, t0)
-        P = add_fully(orig, x)
+        P = [orig[i] + dir[i] * t0 for i in range(3)]
+        normal = [P[i] - self.position[i] for i in range(3)]
         
-        # Calcular la normal en el punto de intersección
-        normal = subtract_fully(P, self.position)
         normal = normalize_vector(normal)
         
         # Calcular coordenadas de textura (u, v)
@@ -87,11 +82,11 @@ class Plane(Shape):
     def ray_intersect(self, orig, dir):
         #t(distance) = ((planePos - rayOrigin) dotProd(normal))/ rayDir dotProd(normal)
         
-        denom = np.dot(dir, self.normal)
+        denom = dotProd(dir, self.normal)
         if math.isclose(0, denom):
             return None
-        x = np.subtract(self.position, orig)
-        num = np.dot(x, self.normal)
+        x = subtract_vectors(self.position, orig)
+        num = dotProd(x, self.normal)
         t = num/denom
         
         if t < 0:
@@ -117,7 +112,7 @@ class Disk(Plane):
         
         if planeIntercept is None:
             return None
-        contact = np.subtract(planeIntercept.point, self.position)
+        contact = subtract_vectors(planeIntercept.point, self.position)
         contact = np.linalg.norm(contact)
         
         if contact > self.radius:

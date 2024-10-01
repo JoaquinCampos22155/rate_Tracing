@@ -37,7 +37,7 @@ class Material(object):
                 shadowIntercept = renderer.glCastRay(intercept.point, lightDir, intercept.obj)
 
             elif light.lightType == "Point":
-                lightDir = np.subtract(light.position, intercept.point)
+                lightDir = subtract_vectors(light.position, intercept.point)
                 R = np.linalg.norm(lightDir)
                 lightDir /= R
                 shadowIntercept = renderer.glCastRay(intercept.point, lightDir, intercept.obj)
@@ -70,7 +70,10 @@ class Material(object):
             # Generamos los rayos de reflección
             rayDir = [-i for i in intercept.rayDirection]
             reflect = reflectVector(rayDir, intercept.normal)
-            reflectOrig = custom_add(intercept.point, bias) if outside else custom_subtract(intercept.point, bias)
+            if outside:
+                reflectOrig = [intercept.point[i] + bias[i] for i in range(len(bias))]
+            else:
+                reflectOrig = [intercept.point[i] - bias[i] for i in range(len(bias))]
             reflectIntercept = renderer.glCastRay(reflectOrig, reflect, None,recursion + 1)
             if reflectIntercept != None:
                 reflectColor = reflectIntercept.obj.material.GetSurfaceColor(reflectIntercept, renderer, recursion + 1)
@@ -80,7 +83,10 @@ class Material(object):
             # Generamos los rayos de refracción
             if not totalInternalReflection(intercept.normal, intercept.rayDirection, 1.0, self.ior):
                 refract = refractVector(intercept.normal, intercept.rayDirection, 1.0, self.ior)
-                refractOrig = custom_subtract(intercept.point, bias) if outside else custom_add(intercept.point, bias)
+                if outside:
+                    refractOrig = [intercept.point[i] - bias[i] for i in range(len(bias))]
+                else:
+                    refractOrig = [intercept.point[i] + bias[i] for i in range(len(bias))]
                 refractIntercept = renderer.glCastRay(refractOrig, refract, None, recursion + 1)
                 if refractIntercept != None:
                     refractColor = refractIntercept.obj.material.GetSurfaceColor(refractIntercept, renderer, recursion + 1)

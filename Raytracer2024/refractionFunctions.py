@@ -8,7 +8,7 @@ def refractVector(normal, incident, n1, n2):
     
     # Ley de Snell
     c1 = dotProd(normal, incident)
-    
+     
     if c1 < 0:
         c1 = -c1
     else:

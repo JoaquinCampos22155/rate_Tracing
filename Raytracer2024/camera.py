@@ -5,7 +5,7 @@ class Camera(object):
         
         self.translate = [0,0,0]
         self.rotate = [0,0,0]
-    
+     
     #mult. de matriz
     def GetViewMatrix(self):
         translateMat = TranslationMatrix(self.translate[0],

@@ -16,7 +16,7 @@ class Texture(object):
 
 			for y in range(self.height):
 				pixelRow = []
-
+ 
 				for x in range(self.width):
 					b = ord(image.read(1)) / 255
 					g = ord(image.read(1)) / 255
