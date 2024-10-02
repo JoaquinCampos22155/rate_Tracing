@@ -1,6 +1,5 @@
 from  Mathlib import *
 from math import cos, pi
-import numpy as np
 class Light(object):
     def __init__(self, color = [1,1,1], intensity = 1.0, lightType = "None"):
         self.color = color 
@@ -66,8 +65,9 @@ class PointLight(Light):
         if intercept:
             dir = subtract_vectors(self.position, intercept.point)
             #np.linalg.norm() magnitud de vector
-            R = np.linalg.norm(dir)
-            dir /= R
+            R = magnitude_vect(dir)
+            for i in range(len(dir)):
+                dir[i] /= R
             
             intensity = dotProd(intercept.normal, dir)
             intensity = max(0, min(1, intensity))
@@ -88,8 +88,9 @@ class PointLight(Light):
         if intercept:
             dir = subtract_vectors(self.position, intercept.point)
             #np.linalg.norm() magnitud de vector
-            R = np.linalg.norm(dir)
-            dir /= R
+            R = magnitude_vect(dir)
+            for i in range(len(dir)):
+                dir[i] /= R
             
             reflect = reflectVector(intercept.normal, dir)
             
@@ -130,7 +131,10 @@ class SpotLight(PointLight):
         if intercept == None:
             return 0
         wi = subtract_vectors(self.position, intercept.point)
-        wi /= np.linalg.norm(wi)
+        R = magnitude_vect(wi)
+        for i in range(len(wi)):
+            wi[i] /= R
+        
         
         innerAngleRads = self.innerAngle *pi /180
         outerAngleRads = self.outerAngle *pi /180

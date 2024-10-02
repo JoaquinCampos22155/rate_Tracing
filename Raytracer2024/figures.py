@@ -1,7 +1,6 @@
 from Mathlib import *
 from math import atan2, acos, pi
 from intercept import *
-import numpy as np
 class Shape(object):
     def __init__(self, position, material):
         self.position = position
@@ -75,8 +74,10 @@ class Sphere(Shape):
 class Plane(Shape):
     def __init__(self, position, normal, material):
         super().__init__(position, material)
-        #linnorm()?
-        self.normal = normal / np.linalg.norm(normal)
+        R = magnitude_vect(normal)
+        for i in range(len(normal)):
+            normal[i] /= R
+        self.normal = normal
         self.type == "Plane"
         
     def ray_intersect(self, orig, dir):
@@ -93,12 +94,16 @@ class Plane(Shape):
             return None
         #P = orig +  dir * t0
         
-        P = np.add(orig , np.array(dir)*t)
+        #np.array(dir)
+        x = toArray(dir)
+        y = mult_scalar_vect(x, t)
+        P = [orig[i] + y[i] for i in range(3)]
+
         return Intercept(point = P,
                         normal=self.normal,
                         distance = t,
                         texCoords= None,
-                        rayDirection=dir, 
+                        rayDirection=dir,
                         obj = self)
         
 class Disk(Plane):
@@ -113,7 +118,7 @@ class Disk(Plane):
         if planeIntercept is None:
             return None
         contact = subtract_vectors(planeIntercept.point, self.position)
-        contact = np.linalg.norm(contact)
+        contact = magnitude_vect(contact)
         
         if contact > self.radius:
             return None
@@ -197,6 +202,6 @@ class AABB(Shape):
         return Intercept(point= intercept.point,
                          normal= intercept.normal,
                          distance= t,
-                         texCoords = None,
+                         texCoords = [u,v],
                          rayDirection= dir,
                          obj= self)

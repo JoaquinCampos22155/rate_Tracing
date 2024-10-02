@@ -6,8 +6,8 @@ from material import *
 from lights import *
 from texture import Texture
 
-width =  64*2*2
-height = 64*2*2
+width =  64*2*2*2
+height = 64*2*2*2
 background_color = (0, 0, 0)  
 
  
@@ -64,11 +64,11 @@ rt.scene.append(Plane(position=[0,0,-10], normal=[0,0,1], material=water))  # Pa
 # rt.scene.append(Plane(position=[-2,0,-10], normal=[-1,0,0], material=wood))
 
 #DISKS----------------------------------
-rt.scene.append(Disk(position= [0,-1,-9], normal=[0,0,1], radius = 1.5, material = mirror))
+rt.scene.append(Disk(position= [0,0,-9], normal=[0,0,1], radius = 1, material = mirror))
 
 #AABB----------------------------------
-rt.scene.append(AABB(position = [-1,0,-5], sizes = [0.5,0.5,0.5], material = wood))
-rt.scene.append(AABB(position = [1,0,-5], sizes = [0.5,0.5,0.5], material = brick))
+rt.scene.append(AABB(position = [-1,0,-4], sizes = [0.7,0.7,0.7], material = wood))
+rt.scene.append(AABB(position = [1,0,-4], sizes = [0.7,0.7,0.7], material = brick))
 
 
 

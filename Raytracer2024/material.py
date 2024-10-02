@@ -1,6 +1,5 @@
 from Mathlib import reflectVector
 from refractionFunctions import *
-import numpy as np
 
 OPAQUE = 0
 REFLECTIVE = 1
@@ -38,8 +37,9 @@ class Material(object):
 
             elif light.lightType == "Point":
                 lightDir = subtract_vectors(light.position, intercept.point)
-                R = np.linalg.norm(lightDir)
-                lightDir /= R
+                R = magnitude_vect(lightDir)
+                for i in range(len(lightDir)):
+                    lightDir[i] /= R
                 shadowIntercept = renderer.glCastRay(intercept.point, lightDir, intercept.obj)
                 if shadowIntercept:
                     if shadowIntercept.distance >= R:
