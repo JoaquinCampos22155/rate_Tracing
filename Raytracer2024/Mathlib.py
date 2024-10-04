@@ -25,8 +25,14 @@ def subtract_vectors(v1, v2):
 
 def dotProd(vec1, vec2):
     return sum(vi * vj for vi, vj in zip(vec1, vec2))
-
-
+def cross_product(vec1, vec2):
+    cross_prod = [
+        vec1[1] * vec2[2] - vec1[2] * vec2[1], 
+        vec1[2] * vec2[0] - vec1[0] * vec2[2], 
+        vec1[0] * vec2[1] - vec1[1] * vec2[0]  
+    ]
+    
+    return cross_prod
 
 #matriz inversa
 def inverseMatrix(matrix):

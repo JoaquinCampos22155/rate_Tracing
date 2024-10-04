@@ -71,9 +71,14 @@ rt.lights.append(PointLight(position= [0,0,-5],intensity=3))
 # rt.scene.append(AABB(position = [1,0,-4], sizes = [0.7,0.7,0.7], material = brick))
 
 #TRIANGLE----------------------------------
-rt.scene.append(Triangle(v0=[-1, 0, -4], v1=[-0.3, 1, -4], v2=[-1.7, 1, -4],  material=wood))
+# rt.scene.append(Triangle(v0=[-1.2, 1.4, -4], v1=[-1.8, 1, -4], v2=[-1.3, 1, -4],  material=marmol))
+# rt.scene.append(Triangle(v0=[-0.3, 1.4, -4], v1=[0.0, 2, -4], v2=[0.3, 1, -4],  material=mirror))
+# rt.scene.append(Triangle(v0=[1.2, 1.4, -4], v1=[0.8, 1, -4], v2=[1.7, 1, -4],  material=glass))
 
-
+#CYLINDER----------------------------------
+rt.scene.append(Cylinder(position=[1.2, -2, -5], radius=0.2, height=1, normal=[0.3,1,0], material=wood))
+# rt.scene.append(Cylinder(position=[0, -2, -5], radius=0.3, height=1, material=mirror))
+# rt.scene.append(Cylinder(position=[-1.2, -2, -5], radius=0.2, height=1, material=glass))
 
 rt.glRender()
 
@@ -91,6 +96,6 @@ while isRunning:
     pygame.display.flip()	  
     clock.tick(60)
     
-rt.glGenerateFrameBuffer("HIGHR.bmp")
+rt.glGenerateFrameBuffer("CYLINDER.bmp")
 pygame.quit()  
   
