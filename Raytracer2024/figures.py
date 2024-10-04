@@ -1,6 +1,7 @@
 from Mathlib import *
 from math import atan2, acos, pi
 from intercept import *
+import numpy as np
 class Shape(object):
     def __init__(self, position, material):
         self.position = position
@@ -205,3 +206,57 @@ class AABB(Shape):
                          texCoords = [u,v],
                          rayDirection= dir,
                          obj= self)
+class Triangle(Shape):        
+    def __init__(self, v0, v1, v2, material):
+        super().__init__(v0, material)
+        self.v0 = v0 
+        self.v1 = v1 
+        self.v2 = v2 
+        self.type = "Triangle"
+        
+        # Calcular el vector normal del triángulo
+        self.normal = np.cross(np.subtract(v1, v0), np.subtract(v2, v0))
+        self.normal = normalize_vector(self.normal)
+        
+    def ray_intersect(self, orig, dir):
+        # Método de intersección de rayo con triángulo
+        # Utiliza el algoritmo de Möller–Trumbore para una intersección eficiente
+
+        epsilon = 1e-6
+        edge1 = np.subtract(self.v1, self.v0)
+        edge2 = np.subtract(self.v2, self.v0)
+        h = np.cross(dir, edge2)
+        a = np.dot(edge1, h)
+        
+        if -epsilon < a < epsilon:
+            return None  # El rayo es paralelo al triángulo
+        
+        f = 1.0 / a
+        s = np.subtract(orig, self.v0)
+        u = f * np.dot(s, h)
+        
+        if u < 0.0 or u > 1.0:
+            return None  # El punto de intersección está fuera del triángulo
+        
+        q = np.cross(s, edge1)
+        v = f * np.dot(dir, q)
+        
+        if v < 0.0 or u + v > 1.0:
+            return None  # El punto de intersección está fuera del triángulo
+        
+        t = f * np.dot(edge2, q)
+        
+        if t < epsilon:
+            return None  # No hay intersección
+        
+        # Calcular el punto de intersección
+        P = orig + mult_scalar_vect(dir, t)
+        # Devolver la información de la intersección
+        return Intercept(
+            point=P,
+            normal=self.normal,
+            distance=t,
+            texCoords=[u, v],
+            rayDirection=dir,
+            obj=self
+        )

@@ -164,7 +164,7 @@ def reflectVector(normal, direction):
     
     reflect = dotProd(normal_vector, normal_dir)
     reflect = reflect * 2
-    reflect = mult_scalar_vect(normal,reflect)
+    reflect = mult_scalar_vect(normal_dir,reflect)
     reflect = subtract_vectors(reflect, direction)
     reflect = normalize_vector(reflect)
     return reflect

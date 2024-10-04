@@ -6,8 +6,8 @@ from material import *
 from lights import *
 from texture import Texture
 
-width =  64*2*2*2
-height = 64*2*2*2
+width =  64*2
+height = 64*2
 background_color = (0, 0, 0)  
 
  
@@ -53,24 +53,25 @@ rt.lights.append(PointLight(position= [0,0,-5],intensity=3))
 
 #PLANES---------------------------------
 # #rt.scene.append(Plane(position=[0,0,-5], normal=[0,-1,-2], material=wood))
-rt.scene.append(Plane(position=[0,2,0], normal=[0,-1,0], material=brick))  # Techo
-rt.scene.append(Plane(position=[0,-2,0], normal=[0,1,0], material=tierra))  # Piso
-rt.scene.append(Plane(position=[-3,0,-10], normal=[1,0,0], material=marmol))  # Pared izquierda
-rt.scene.append(Plane(position=[3,0,-10], normal=[-1,0,0], material=marmol))  # Pared derecha
-rt.scene.append(Plane(position=[0,0,-10], normal=[0,0,1], material=water))  # Pared de fondo
+# rt.scene.append(Plane(position=[0,2,0], normal=[0,-1,0], material=brick))  # Techo
+# rt.scene.append(Plane(position=[0,-2,0], normal=[0,1,0], material=tierra))  # Piso
+# rt.scene.append(Plane(position=[-3,0,-10], normal=[1,0,0], material=marmol))  # Pared izquierda
+# rt.scene.append(Plane(position=[3,0,-10], normal=[-1,0,0], material=marmol))  # Pared derecha
+# rt.scene.append(Plane(position=[0,0,-10], normal=[0,0,1], material=water))  # Pared de fondo
 
 
 # rt.scene.append(Plane(position=[2,0,-10], normal=[1,0,0], material=wood))
 # rt.scene.append(Plane(position=[-2,0,-10], normal=[-1,0,0], material=wood))
 
 #DISKS----------------------------------
-rt.scene.append(Disk(position= [0,0,-9], normal=[0,0,1], radius = 1, material = mirror))
+# rt.scene.append(Disk(position= [0,0,-9], normal=[0,0,1], radius = 1, material = mirror))
 
 #AABB----------------------------------
-rt.scene.append(AABB(position = [-1,0,-4], sizes = [0.7,0.7,0.7], material = wood))
-rt.scene.append(AABB(position = [1,0,-4], sizes = [0.7,0.7,0.7], material = brick))
+# rt.scene.append(AABB(position = [-1,0,-4], sizes = [0.7,0.7,0.7], material = wood))
+# rt.scene.append(AABB(position = [1,0,-4], sizes = [0.7,0.7,0.7], material = brick))
 
-
+#TRIANGLE----------------------------------
+rt.scene.append(Triangle(v0=[-1, 0, -4], v1=[-0.3, 1, -4], v2=[-1.7, 1, -4],  material=wood))
 
 
 
