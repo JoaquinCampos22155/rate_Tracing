@@ -6,8 +6,8 @@ from material import *
 from lights import *
 from texture import Texture
 
-width =  64*2
-height = 64*2
+width =  64*2*2*2
+height = 64*2*2*2
 background_color = (0, 0, 0)  
 
  
@@ -24,18 +24,17 @@ brick = Material(texture=Texture("Raytracer2024/textures/redrocks.bmp"), diffuse
 rocks = Material(texture=Texture("Raytracer2024/textures/rocks.bmp"), diffuse = [0.498,0.513,0.525] , spec = 16*2*2 , Ks = 0.2, matType = OPAQUE)
 wood = Material(texture=Texture("Raytracer2024/textures/wood.bmp"), diffuse = [0.776,0.635,0.494] , spec = 16*2*2*2 , Ks = 0.5, matType = OPAQUE)
 darkwood = Material(texture=Texture("Raytracer2024/textures/darkwood.bmp"), diffuse = [1,1,1] , spec = 16 , Ks = 0.1, matType = OPAQUE)
-marmol = Material(texture=Texture("Raytracer2024/textures/marmol.bmp"), diffuse = [1,1,1] , spec = 16*2*2 , Ks = 0.2, matType = OPAQUE)
+#marmol = Material(texture=Texture("Raytracer2024/textures/marmol.bmp"), diffuse = [1,1,1] , spec = 16*2*2 , Ks = 0.2, matType = OPAQUE)
 tierra = Material(texture=Texture("Raytracer2024/textures/tierra.bmp"), diffuse = [1,1,1] , spec = 16*2*2 , Ks = 0.2, matType = OPAQUE)
 grass = Material(diffuse = [0.1,1,0.1], spec = 32 , Ks = 0.5)
-water = Material(diffuse = [0,0,1], spec = 128,  Ks = 0.2)
 snow = Material(diffuse = [0.6,0.6,0.6], spec = 63,  Ks = 0.1)
 #REFLECTIVE
 mirror = Material(diffuse= [0.9,0.9,0.9], spec = 128, Ks = 0.2, matType = REFLECTIVE)
-blueMirror = Material(texture = Texture("Raytracer2024/textures/redrocks.bmp"),diffuse= [0.5,0.5,1.0], spec = 128, Ks = 0.2, matType = REFLECTIVE)
-bkgroundmirror = Material(texture = Texture("Raytracer2024/textures/redrocks.bmp"), spec = 128, Ks = 0.2, matType = REFLECTIVE)
-#marble = Material(texture = Texture("Raytracer2024/textures/whiteMarble.bmp"), spec = 128, Ks = 0.2, matType = REFLECTIVE)
+blueMirror = Material(texture = Texture("Raytracer2024/textures/redrocks.bmp"), spec = 128, Ks = 0.2, matType = REFLECTIVE)
+#marble = Material(texture = Texture("Rawytracer2024/textures/marble.bmp"), spec = 128, Ks = 0.2, matType = REFLECTIVE)
 #TRANSPARENT
-glass = Material(spec = 123, Ks = 0.2, ior = 1.5, matType= TRANSPARENT)
+glass = Material(spec = 100, Ks = 0.04, ior = 1.52, matType= TRANSPARENT)
+water = Material(spec = 70, Ks = 0.02, ior = 1.33, matType= TRANSPARENT)
 
 #LIGHTS--------------------------------
 rt.lights.append(DirectionalLight(direction=[-1,-1,-1], intensity=0.9))
@@ -71,14 +70,14 @@ rt.lights.append(PointLight(position= [0,0,-5],intensity=3))
 # rt.scene.append(AABB(position = [1,0,-4], sizes = [0.7,0.7,0.7], material = brick))
 
 #TRIANGLE----------------------------------
-# rt.scene.append(Triangle(v0=[-1.2, 1.4, -4], v1=[-1.8, 1, -4], v2=[-1.3, 1, -4],  material=marmol))
-# rt.scene.append(Triangle(v0=[-0.3, 1.4, -4], v1=[0.0, 2, -4], v2=[0.3, 1, -4],  material=mirror))
-# rt.scene.append(Triangle(v0=[1.2, 1.4, -4], v1=[0.8, 1, -4], v2=[1.7, 1, -4],  material=glass))
+rt.scene.append(Triangle(v0=[-1.2, 1.4, -4], v1=[-1.8, 1, -4], v2=[-1.3, 1, -4],  material=rocks))
+rt.scene.append(Triangle(v0=[-0.3, 1.4, -4], v1=[0.0, 2, -4], v2=[0.3, 1, -4],  material=mirror))
+rt.scene.append(Triangle(v0=[1.2, 1.4, -4], v1=[0.8, 1, -4], v2=[1.7, 1, -4],  material=glass))
 
 #CYLINDER----------------------------------
-rt.scene.append(Cylinder(position=[1.2, -2, -5], radius=0.2, height=1, normal=[0.3,1,0], material=wood))
-# rt.scene.append(Cylinder(position=[0, -2, -5], radius=0.3, height=1, material=mirror))
-# rt.scene.append(Cylinder(position=[-1.2, -2, -5], radius=0.2, height=1, material=glass))
+rt.scene.append(Cylinder(position=[-2, -2, -5], radius=0.2, height=1, normal=[0.3,1,0], material=wood))
+rt.scene.append(Cylinder(position=[1, -2, -5], radius=0.5, height=2, normal=[0,1,0.2], material=mirror))
+rt.scene.append(Cylinder(position=[2, -2, -5], radius=0.1, height=1, normal=[0.3,-1,0], material=glass))
 
 rt.glRender()
 

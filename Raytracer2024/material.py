@@ -101,8 +101,8 @@ class Material(object):
 
 
 
-        finalColor = [(finalColor[i] * (lightColor[i] + reflectColor[i] + refractColor[i]) ) for i in range(3)]
-        finalColor = [min(1,finalColor[i]) for i in range(3)]
+        finalColor = [(finalColor[i] * (lightColor[i] + reflectColor[i].real + refractColor[i].real) ) for i in range(3)]
+        finalColor = [min(1,finalColor[i].real) for i in range(3)]
 
         return finalColor
     

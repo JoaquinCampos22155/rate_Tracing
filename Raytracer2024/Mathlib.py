@@ -18,6 +18,11 @@ def magnitudVector(v):
 def mult_scalar_vect(vector, scalar):
     return[x * scalar for x in vector]
 
+def dotProdmtvc(matrix, vector):
+    return [sum(matrix[i][j] * vector[j] for j in range(3)) for i in range(3)]
+
+def add_vectors(v1, v2):
+    return [v1[i] + v2[i] for i in range(len(v1))]
 
 def subtract_vectors(v1, v2):
     # Resta de vectores

@@ -1,7 +1,6 @@
 from Mathlib import *
 from math import atan2, acos, pi
 from intercept import *
-import numpy as np
 class Shape(object):
     def __init__(self, position, material):
         self.position = position
@@ -268,27 +267,32 @@ class Cylinder(Shape):
         self.normal = normalize_vector(normal)
         self.type = "Cylinder"
         
-        # Vamos a construir una base ortonormal usando el vector normal
+        # Construimos la matriz de transformación con el vector normal
         self.transformation_matrix = self.build_transformation_matrix(self.normal)
-        self.inverse_transformation_matrix = np.linalg.inv(self.transformation_matrix)
+        self.inverse_transformation_matrix = self.transpose_matrix(self.transformation_matrix)  # Inversión de matriz ortogonal
     
     def build_transformation_matrix(self, normal):
-        # Crear una base ortonormal: usando el normal como eje z del nuevo sistema
-        # Usamos un vector arbitrario que no sea paralelo para calcular la base
+        # Crear una base ortonormal usando el normal como eje Z
         z = normalize_vector(normal)
         x = [1, 0, 0] if abs(z[0]) < 0.9 else [0, 1, 0]  # Vector arbitrario no colineal
-        
-        # Calculamos el vector ortogonal usando el producto cruzado
-        x = normalize_vector(np.cross(z, x))
-        y = np.cross(z, x)
-        
-        # Creamos la matriz de transformación de coordenadas
-        return np.array([x, y, z]).T
+
+        # Calcular el vector ortogonal usando el producto cruzado
+        x = normalize_vector(cross_product(z, x))
+        y = cross_product(z, x)
+
+        # Crear la matriz de transformación (3x3)
+        return [[x[0], y[0], z[0]],
+                [x[1], y[1], z[1]],
+                [x[2], y[2], z[2]]]
+    
+    def transpose_matrix(self, matrix):
+        # Transponer la matriz (inversión de matriz ortogonal)
+        return [[matrix[j][i] for j in range(3)] for i in range(3)]
     
     def ray_intersect(self, orig, dir):
         # Transformar las coordenadas del rayo al sistema de referencia del cilindro
-        orig_local = np.dot(self.inverse_transformation_matrix, subtract_vectors(orig, self.position))
-        dir_local = np.dot(self.inverse_transformation_matrix, dir)
+        orig_local = dotProdmtvc(self.inverse_transformation_matrix, subtract_vectors(orig, self.position))
+        dir_local = dotProdmtvc(self.inverse_transformation_matrix, dir)
         
         # Intersección en el espacio local del cilindro (orientado a lo largo del eje Y)
         dx, dz = dir_local[0], dir_local[2]
@@ -320,7 +324,7 @@ class Cylinder(Shape):
             t1 = None
             
         if t0 is None and t1 is None:
-            return None  # No intersección dentro de la altura del cilindro
+            return None  # No hay intersección dentro de la altura del cilindro
         
         t = t0 if t0 is not None else t1
         
@@ -334,9 +338,9 @@ class Cylinder(Shape):
         normal_local = [P_local[0], 0, P_local[2]]
         normal_local = normalize_vector(normal_local)
         
-        # Convertimos el punto de intersección y la normal de vuelta al espacio global
-        P_world = np.dot(self.transformation_matrix, P_local) + self.position
-        normal_world = np.dot(self.transformation_matrix, normal_local)
+        # Convertir el punto de intersección y la normal de vuelta al espacio global
+        P_world = add_vectors(dotProdmtvc(self.transformation_matrix, P_local), self.position)
+        normal_world = dotProdmtvc(self.transformation_matrix, normal_local)
         normal_world = normalize_vector(normal_world)
         
         # Coordenadas de textura
