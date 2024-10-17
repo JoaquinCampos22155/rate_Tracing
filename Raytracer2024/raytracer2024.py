@@ -15,7 +15,7 @@ screen = pygame.display.set_mode((width,height), pygame.SCALED)
 clock = pygame.time.Clock()
 
 rt = RendererRT(screen)
-rt.envMap = Texture("Raytracer2024/textures/backgrounds/squashcourt.bmp")
+rt.envMap = Texture("Raytracer2024/textures/backgrounds/billiard.bmp")
 
 
 #MATERIALS--------------------------------
@@ -24,6 +24,10 @@ brick = Material(texture=Texture("Raytracer2024/textures/redrocks.bmp"), diffuse
 rocks = Material(texture=Texture("Raytracer2024/textures/rocks.bmp"), diffuse = [0.498,0.513,0.525] , spec = 16*2*2 , Ks = 0.2, matType = OPAQUE)
 wood = Material(texture=Texture("Raytracer2024/textures/wood.bmp"), diffuse = [0.776,0.635,0.494] , spec = 16*2*2*2 , Ks = 0.5, matType = OPAQUE)
 darkwood = Material(texture=Texture("Raytracer2024/textures/darkwood.bmp"), diffuse = [1,1,1] , spec = 16 , Ks = 0.1, matType = OPAQUE)
+denim = Material(texture=Texture("Raytracer2024/textures/denim.bmp"), diffuse = [0.776,0.635,0.494] , spec = 16*2*2*2 , Ks = 0.5, matType = OPAQUE)
+shirt = Material(texture=Texture("Raytracer2024/textures/shirt.bmp"), diffuse = [0.776,0.635,0.494] , spec = 16*2*2*2 , Ks = 0.5, matType = OPAQUE)
+skin = Material(texture=Texture("Raytracer2024/textures/skin.bmp"), diffuse = [0.776,0.635,0.494] , spec = 16*2*2*2 , Ks = 0.5, matType = OPAQUE)
+
 #marmol = Material(texture=Texture("Raytracer2024/textures/marmol.bmp"), diffuse = [1,1,1] , spec = 16*2*2 , Ks = 0.2, matType = OPAQUE)
 tierra = Material(texture=Texture("Raytracer2024/textures/tierra.bmp"), diffuse = [1,1,1] , spec = 16*2*2 , Ks = 0.2, matType = OPAQUE)
 grass = Material(diffuse = [0.1,1,0.1], spec = 32 , Ks = 0.5)
@@ -40,44 +44,46 @@ water = Material(spec = 70, Ks = 0.02, ior = 1.33, matType= TRANSPARENT)
 rt.lights.append(DirectionalLight(direction=[-1,-1,-1], intensity=0.9))
 rt.lights.append(AmbientLight(intensity= 0.5))
 rt.lights.append(PointLight(position= [0,0,-5],intensity=3))
+rt.lights.append(PointLight(position= [0,5,-5],intensity=5))
 
-#SPHERES--------------------------------
-#rt.scene.append(Sphere([-1, 0, -6], radius=0.5, material=brick))
-# rt.scene.append(Sphere([-1.5, -1, -5], radius=0.5, material=rocks))
-# rt.scene.append(Sphere([0, 1, -7], radius=0.5, material=mirror))
-# rt.scene.append(Sphere([0, -1, -7], radius=0.5, material=blueMirror))
-# rt.scene.append(Sphere([1.5, 1, -5], radius=0.5, material=glass))
-# rt.scene.append(Sphere([1.5, -1, -5], radius=0.5, material=glass))
-#rt.scene.append(Sphere([0, 0, -5], radius=1.5, material=glass))
+# #SPHERES--------------------------------
+rt.scene.append(Sphere(position=[2.3, 0.3, -4], radius=0.5, material=skin)) #cabeza
+rt.scene.append(Sphere(position=[1, -1, -4], radius=0.2, material=skin)) #mano
+rt.scene.append(Sphere(position=[3.6, -1, -4], radius=0.2, material=skin)) #mano
 
-#PLANES---------------------------------
-# #rt.scene.append(Plane(position=[0,0,-5], normal=[0,-1,-2], material=wood))
-# rt.scene.append(Plane(position=[0,2,0], normal=[0,-1,0], material=brick))  # Techo
-# rt.scene.append(Plane(position=[0,-2,0], normal=[0,1,0], material=tierra))  # Piso
-# rt.scene.append(Plane(position=[-3,0,-10], normal=[1,0,0], material=marmol))  # Pared izquierda
-# rt.scene.append(Plane(position=[3,0,-10], normal=[-1,0,0], material=marmol))  # Pared derecha
-# rt.scene.append(Plane(position=[0,0,-10], normal=[0,0,1], material=water))  # Pared de fondo
+rt.scene.append(Sphere(position=[-1.3, -1, -4], radius=0.2, material=grass)) #mano
+rt.scene.append(Sphere(position=[-2, -1, -5], radius=0.2, material=snow)) #mano
+rt.scene.append(Sphere(position=[-3, -1, -3], radius=0.2, material=brick)) #mano
 
+# #DISKS--------------------------------------
+#rt.scene.append(Disk(position= [-5, 1,-9], normal=[0.3,0,1], radius = 0.3, material = mirror))
 
-# rt.scene.append(Plane(position=[2,0,-10], normal=[1,0,0], material=wood))
-# rt.scene.append(Plane(position=[-2,0,-10], normal=[-1,0,0], material=wood))
+#AABB---------------------------------------
+# pantalon
+rt.scene.append(AABB(position = [2.5,-2.01,-4], sizes = [0.5,1,0.35], material = denim)) #ya
+rt.scene.append(AABB(position = [2,-2,-4], sizes = [0.4,1,0.35], material = denim))#ya
+# camisa
+rt.scene.append(AABB(position = [2.25,-0.95,-4], sizes = [1,1.5,0.3], material = shirt)) #camisa
 
-#DISKS----------------------------------
-# rt.scene.append(Disk(position= [0,0,-9], normal=[0,0,1], radius = 1, material = mirror))
+# #TRIANGLE----------------------------------
+rt.scene.append(Triangle(v0=[1.7, -0.1, -4], v1=[1.4, -0.3, -4], v2=[1.7, -0.5, -4],  material=shirt)) #sleeve
+rt.scene.append(Triangle(v0=[2.9, -0.1, -4], v1=[3.3, -0.3, -4], v2=[2.9, -0.5, -4],  material=shirt))#sleeve
 
-#AABB----------------------------------
-# rt.scene.append(AABB(position = [-1,0,-4], sizes = [0.7,0.7,0.7], material = wood))
-# rt.scene.append(AABB(position = [1,0,-4], sizes = [0.7,0.7,0.7], material = brick))
+# #CYLINDER-----------------------------------
+rt.scene.append(Cylinder(position=[1.55, -0.4, -4], radius=0.13, height=0.8, normal=[-1,0.8,0], material=skin))#brazo
+rt.scene.append(Cylinder(position=[3.5, -1, -4], radius=0.13, height=0.8, normal=[1,0.8,0], material=skin)) #brazo
 
-#TRIANGLE----------------------------------
-rt.scene.append(Triangle(v0=[-1.2, 1.4, -4], v1=[-1.8, 1, -4], v2=[-1.3, 1, -4],  material=rocks))
-rt.scene.append(Triangle(v0=[-0.3, 1.4, -4], v1=[0.0, 2, -4], v2=[0.3, 1, -4],  material=mirror))
-rt.scene.append(Triangle(v0=[1.2, 1.4, -4], v1=[0.8, 1, -4], v2=[1.7, 1, -4],  material=glass))
+# #
+rt.scene.append(Cylinder(position=[1, 0, -5], radius=0.05, height=5, normal=[1,0,0], material=wood)) #palo
 
-#CYLINDER----------------------------------
-rt.scene.append(Cylinder(position=[-2, -2, -5], radius=0.2, height=1, normal=[0.3,1,0], material=wood))
-rt.scene.append(Cylinder(position=[1, -2, -5], radius=0.5, height=2, normal=[0,1,0.2], material=mirror))
-rt.scene.append(Cylinder(position=[2, -2, -5], radius=0.1, height=1, normal=[0.3,-1,0], material=glass))
+#ELLIPSOID----------------------------------
+#rt.scene.append(Ellipsoid(position=[1.5, 3.2, -300], radii=[0.2, 0.2, 0.2], material=brick))
+# rt.scene.append(Ellipsoid(position=[2, 3.2, -300], radii=[0.2, 0.2, 0.2], material=brick))
+
+#cambiar--------------------------------------
+#rt.scene.append(HexagonalPrism(position=[0, 6, -6], radius=0.5, height=1, material=wood))
+
+#rt.scene.append(Star(position=[0, 0, -5], size=2, material=wood))
 
 rt.glRender()
 

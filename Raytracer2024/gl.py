@@ -44,7 +44,7 @@ class RendererRT(object):
         self.vpWidth = width
         self.vpHeight = height
     
-    def glProjection(self, n=0.1, f=1000, fov=60):
+    def glProjection(self, n=0.1, f=1000, fov=100):
         self.nearPlane = n
         self.farPlane = f
         self.fov = fov * pi / 180

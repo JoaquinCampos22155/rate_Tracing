@@ -358,3 +358,165 @@ class Cylinder(Shape):
             rayDirection=dir,
             obj=self
         )
+class Ellipsoid(Shape):
+    def __init__(self, position, radii, material):
+        super().__init__(position, material)
+        self.radii = radii  # Radii should be a list or tuple [rx, ry, rz]
+        self.type = "Ellipsoid"
+    
+    def ray_intersect(self, orig, dir):
+        # Rescalar el origen y la dirección del rayo según los radios del elipsoide
+        scaled_orig = [orig[i] / self.radii[i] for i in range(3)]
+        scaled_dir = [dir[i] / self.radii[i] for i in range(3)]
+        
+        # Utilizamos la misma fórmula que para la esfera con el origen y la dirección escalados
+        L = subtract_vectors(self.position, scaled_orig)
+        tca = dotProd(L, scaled_dir)
+        L_magnitude = magnitude_vect(L)
+        d2 = L_magnitude ** 2 - tca ** 2
+        
+        if d2 > 1:  # El punto más cercano al rayo está fuera del elipsoide
+            return None
+        
+        thc = (1 - d2) ** 0.5
+        t0 = tca - thc
+        t1 = tca + thc
+        
+        if t0 < 0:
+            t0 = t1
+        if t0 < 0:
+            return None
+        
+        # Calcular el punto de intersección
+        P = [scaled_orig[i] + scaled_dir[i] * t0 for i in range(3)]
+        # Escalamos de vuelta a las coordenadas originales
+        P_world = [P[i] * self.radii[i] for i in range(3)]
+        normal = normalize_vector([P_world[i] - self.position[i] for i in range(3)])
+        
+        u = (atan2(normal[2], normal[0])) / (2 * pi) + 0.5
+        v = acos(-normal[1]) / pi
+        
+        return Intercept(
+            point=P_world,
+            normal=normal,
+            distance=t0,
+            texCoords=[u, v],
+            rayDirection=dir,
+            obj=self
+        )
+###
+class HexagonalPrism(Shape):
+    def __init__(self, position, radius, height, material):
+        super().__init__(position, material)
+        self.radius = radius
+        self.height = height
+        self.type = "HexagonalPrism"
+        
+        # Crear los seis planos que forman los lados del prisma
+        self.planes = []
+        for i in range(6):
+            angle = (pi / 3) * i  # El ángulo correcto entre las caras es pi/3
+            normal = [cos(angle), 0, sin(angle)]  # Normales de los planos laterales
+            plane_position = [position[0] + cos(angle) * radius, position[1], position[2] + sin(angle) * radius]
+            self.planes.append(Plane(plane_position, normal, material))
+        
+        # Crear los planos superior e inferior
+        self.top_plane = Plane([position[0], position[1] + height / 2, position[2]], [0, 1, 0], material)
+        self.bottom_plane = Plane([position[0], position[1] - height / 2, position[2]], [0, -1, 0], material)
+    
+    def ray_intersect(self, orig, dir):
+        closest_intercept = None
+        min_distance = float("inf")
+        
+        # Verificar intersección con los planos laterales
+        for plane in self.planes:
+            intercept = plane.ray_intersect(orig, dir)
+            if intercept and intercept.distance < min_distance:
+                # Comprobar si el punto está dentro de la altura del prisma
+                if abs(intercept.point[1] - self.position[1]) <= self.height / 2:
+                    closest_intercept = intercept
+                    min_distance = intercept.distance
+        
+        # Verificar intersección con los planos superior e inferior
+        for plane in [self.top_plane, self.bottom_plane]:
+            intercept = plane.ray_intersect(orig, dir)
+            if intercept and intercept.distance < min_distance:
+                # Comprobar si el punto está dentro del hexágono
+                point_2d = [intercept.point[0] - self.position[0], intercept.point[2] - self.position[2]]
+                if magnitude_vect(point_2d) <= self.radius:
+                    closest_intercept = intercept
+                    min_distance = intercept.distance
+        
+        return closest_intercept
+
+class Star(Shape):
+    def __init__(self, position, size, material):
+        super().__init__(position, material)
+        self.size = size
+        self.type = "Star"
+        
+    def ray_intersect(self, orig, dir):
+        # La intersección es en 2D, por lo que reducimos a 2D
+        num_points = 5  # Número de picos de la estrella
+        angle_step = 2 * math.pi / num_points
+        star_points = []
+        
+        # Generar los puntos de la estrella (alternando puntos interiores y exteriores)
+        for i in range(num_points * 2):
+            angle = i * angle_step / 2
+            r = self.size if i % 2 == 0 else self.size * 0.5
+            x = self.position[0] + r * math.cos(angle)
+            y = self.position[1] + r * math.sin(angle)
+            star_points.append([x, y])
+        
+        # Verificar si el rayo cruza algún borde del polígono formado por la estrella
+        min_distance = float("inf")
+        closest_point = None
+        for i in range(len(star_points)):
+            p0 = star_points[i]
+            p1 = star_points[(i + 1) % len(star_points)]
+            
+            # Ver si el rayo cruza este borde (en 2D)
+            edge = subtract_vectors(p1, p0)  # Operamos en 2D
+            to_origin = subtract_vectors(orig[:2], p0)  # Consideramos solo las coordenadas X e Y
+            dir_2d = dir[:2]  # Solo tomamos el componente 2D del rayo
+            
+            # Cálculo del determinante para evitar división por cero
+            det = dir_2d[0] * edge[1] - dir_2d[1] * edge[0]
+            if math.isclose(det, 0):
+                continue  # El rayo es paralelo al borde
+            
+            # Cálculos de t y u usando determinantes (intersección de segmentos)
+            t = (to_origin[0] * edge[1] - to_origin[1] * edge[0]) / det
+            u = (to_origin[0] * dir_2d[1] - to_origin[1] * dir_2d[0]) / det
+            
+            if 0 <= u <= 1 and t >= 0:  # Intersección válida
+                intersection_point = [orig[0] + dir[0] * t, orig[1] + dir[1] * t]
+                distance = magnitude_vect(subtract_vectors(intersection_point, orig[:2]))
+                if distance < min_distance:
+                    min_distance = distance
+                    closest_point = intersection_point
+        
+        if closest_point is None:
+            return None
+        
+        # Normal de la estrella en el punto de intersección
+        normal = subtract_vectors(closest_point, self.position[:2])
+        normal = normalize_vector(normal)
+        
+        # Calcular coordenadas de textura (u, v)
+        relative_point = subtract_vectors(closest_point, self.position[:2])
+        u = (relative_point[0] / (2 * self.size)) + 0.5
+        v = (relative_point[1] / (2 * self.size)) + 0.5
+        
+        u = max(0, min(0.999, u))
+        v = max(0, min(0.999, v))
+        
+        return Intercept(
+            point=[closest_point[0], closest_point[1], orig[2]],  # Volvemos a 3D
+            normal=[normal[0], normal[1], 0],  # Normal en 2D, con Z = 0
+            distance=min_distance,
+            texCoords=[u, v],
+            rayDirection=dir,
+            obj=self
+        )
