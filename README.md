@@ -1,4 +1,4 @@
-# Raytracer 2D Project
+# Raytracer 
 
 Este proyecto implementa un raytracer en tres dimensiones con la capacidad de manejar múltiples figuras geométricas para simular la intersección de rayos con objetos. El raytracer utiliza una librería propia para manejar operaciones vectoriales y cálculos matemáticos.
 
